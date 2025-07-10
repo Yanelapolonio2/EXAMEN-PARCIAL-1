@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Cursos</title>
+    <!-- Agregar Bootstrap para un diseño atractivo -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJqjL6j2cOVj1/qxZdhJ2w27KK27jo8J5C0slX8A+G6kV5pZx6FL0lHGFqG5" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 30px;
+        }
+
+        .card {
+            margin: 10px 0;
+        }
+
+        .card-title {
+            color: #007bff;
+        }
+
+        .card-body {
+            background-color: #e9ecef;
+        }
+
+        #cursosList {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4">Bienvenido a la API de Cursos</h1>
+            <p class="lead">Consulta y visualiza los cursos disponibles de nuestra API.</p>
+            <button id="loadCursos" class="btn btn-primary btn-lg">Cargar Cursos</button>
+        </div>
+
+        <!-- Contenedor donde se mostrarán los cursos -->
+        <div id="cursosList" class="row mt-4"></div>
+    </div>
+
+    <script>
+        // Evento para cargar los cursos
+        document.getElementById("loadCursos").addEventListener("click", function() {
+            fetch("https://localhost:44307/api/cursos")
+                .then(response => response.json())
+                .then(data => {
+                    // Limpiar la lista de cursos cada vez que se haga una nueva carga
+                    let cursosDiv = document.getElementById("cursosList");
+                    cursosDiv.innerHTML = "";
+
+                    if (data.length > 0) {
+                        // Iterar sobre cada curso y agregarlo a la lista
+                        data.forEach(curso => {
+                            let cursoDiv = document.createElement("div");
+                            cursoDiv.classList.add("col-md-4");
+                            cursoDiv.innerHTML = `
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${curso.nombreCurso}</h5>
+                                        <p class="card-text"><strong>Ciclo:</strong> ${curso.ciclo}</p>
+                                        <p class="card-text"><strong>Créditos:</strong> ${curso.creditos}</p>
+                                        <p class="card-text"><strong>Horas semanales:</strong> ${curso.horasSemanal}</p>
+                                    </div>
+                                </div>
+                            `;
+                            cursosDiv.appendChild(cursoDiv);
+                        });
+                    } else {
+                        cursosDiv.innerHTML = `<div class="col-12"><p>No se encontraron cursos.</p></div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al cargar los cursos:", error);
+                });
+        });
+    </script>
+
+    <!-- Agregar Bootstrap JS para interactividad -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
